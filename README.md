@@ -12,24 +12,6 @@ Este projeto contém implementações de Ray Tracing e Path Tracing aceleradas p
 
 ### Comando de compilação
 
-#### Ray Tracing
-
-```sh
-nvcc scenes/raytracer.cu -o bin/raytracer
-```
-
-#### Path Tracing
-
-```sh
-nvcc scenes/surreal_pathtracer.cu -O2 -arch=sm_XX -o bin/surreal_pathtracer
-```
-
-> **Atenção:** Substitua `sm_XX` pela arquitetura da sua GPU:
->
-> - `-arch=sm_75` para Turing (ex: RTX 20xx, Tesla T4)
-> - `-arch=sm_86` para Ampere (ex: RTX 30xx)
-> - Ou remova `-arch` para deixar o `nvcc` escolher automaticamente
-
 #### Compilação automática (Makefile)
 
 ```sh
@@ -38,13 +20,17 @@ make
 
 Os binários serão gerados na pasta `bin/`.
 
+#### Limpar os arquivos gerados
+
+```sh
+make rm
+```
+
 ## Execução
 
 ### Parâmetros importantes
 
 - **samples**: Amostras por pixel. Aumenta a qualidade, mas o tempo cresce linearmente.
-  - Teste: 50–200
-  - Imagem final: 500+ (pode demorar bastante)
 - **width/height**: Resolução da imagem.
   - Teste: 1280×720
   - Alta qualidade: 1920×1080 (1080p) ou 2560×1440 (1440p)
@@ -55,6 +41,7 @@ Os binários serão gerados na pasta `bin/`.
 
 ```sh
 ./bin/raytracer
+/.bin/rt_and_pt
 ./bin/surreal_pathtracer
 ```
 
@@ -88,6 +75,10 @@ Abra uma issue ou peça ajuda para adicionar qualquer um desses itens!
 
 ---
 
-**Autor:**  
-Pedro  
-PP-Atividade3 — Computação Gráfica / CUDA
+## Créditos: 
+
+- Cristian dos Santos Siquiera — https://github.com/CristianSSiqueira
+- Pedro Rockenbach Frosi — https://github.com/frosipedro
+
+**Uso do arquivo 'stb_image_write.h', disponibilizado no projeto:**
+- https://github.com/nothings/stb
