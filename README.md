@@ -1,4 +1,4 @@
-# PP-Atividade3: Ray Tracing & Path Tracing em CUDA
+# Ray Tracing & Path Tracing em CUDA/CPU (Single Thread - OpenMP)
 
 Este projeto contém implementações de Ray Tracing e Path Tracing aceleradas por GPU usando CUDA. Inclui cenas procedurais, suporte a múltiplos materiais e luzes, além de exemplos de uso em CPU e GPU.
 
@@ -82,3 +82,4 @@ Abra uma issue ou peça ajuda para adicionar qualquer um desses itens!
 
 **Uso do arquivo 'stb_image_write.h', disponibilizado no projeto:**
 - https://github.com/nothings/stb
+
