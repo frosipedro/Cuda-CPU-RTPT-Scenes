@@ -73,8 +73,6 @@ Se quiser implementar mais recursos, veja sugestões:
 
 Abra uma issue ou peça ajuda para adicionar qualquer um desses itens!
 
----
-
 ## Créditos: 
 
 - Cristian dos Santos Siquiera — https://github.com/CristianSSiqueira
@@ -82,4 +80,5 @@ Abra uma issue ou peça ajuda para adicionar qualquer um desses itens!
 
 **Uso do arquivo 'stb_image_write.h', disponibilizado no projeto:**
 - https://github.com/nothings/stb
+
 
