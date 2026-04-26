@@ -1,84 +1,191 @@
-# Ray Tracing & Path Tracing em CUDA/CPU (Single Thread - OpenMP)
+# CUDA Ray Tracing Scenes
 
-Este projeto contém implementações de Ray Tracing e Path Tracing aceleradas por GPU usando CUDA. Inclui cenas procedurais, suporte a múltiplos materiais e luzes, além de exemplos de uso em CPU e GPU.
+This repository contains three standalone CUDA rendering scenes that share the same general goal: make it easy to compare CPU and GPU rendering while keeping the codebase small enough to study.
 
-## Compilação
+The current layout keeps the original rendering ideas intact, but the user experience is more structured:
 
-### Pré-requisitos
+- one launcher to choose the scene
+- clear scene names
+- consistent English prompts
+- timestamped PNG outputs in `images/` to avoid overwriting previous renders
 
-- CUDA Toolkit instalado
-- Compilador compatível com CUDA (ex: nvcc)
-- [stb_image_write.h](https://github.com/nothings/stb/blob/master/stb_image_write.h) na mesma pasta dos arquivos `.cu`
+## Scenes
 
-### Comando de compilação
+| Scene                    | Description                                                                   | Supported modes                                       |
+| ------------------------ | ----------------------------------------------------------------------------- | ----------------------------------------------------- |
+| `simple_raytracer`       | An advanced ray tracer with reflections, direct lighting, and a richer scene. | CPU, GPU, or both                                     |
+| `hybrid_ray_path_tracer` | A path tracer with GPU rendering and optional CPU/OpenMP reference modes.     | Path tracing on GPU plus optional CPU reference modes |
+| `procedural_path_tracer` | A GPU-only procedural path tracer with the heaviest workload in the project.  | GPU only                                              |
 
-#### Compilação automática (Makefile)
+## Requirements
+
+- NVIDIA GPU with CUDA support
+- CUDA Toolkit with `nvcc`
+- GNU Make
+- Bash shell support through WSL or another Unix-like environment
+- `stb_image_write.h` is already included in `scenes/`
+
+### Notes for Windows users
+
+The project is wired primarily for WSL. `make` uses POSIX shell commands and `make run` opens a Bash launcher script. If you prefer native Windows, you can still build with MinGW/MSYS2 and run the binaries directly, but WSL is the recommended path.
+
+## Build
+
+Build every scene with:
 
 ```sh
 make
 ```
 
-Os binários serão gerados na pasta `bin/`.
-
-#### Limpar os arquivos gerados
+Useful targets:
 
 ```sh
-make rm
+make help
+make run
+make clean
 ```
 
-## Execução
+`make run` builds the project and opens the WSL scene launcher.
 
-### Parâmetros importantes
+### Output binaries
 
-- **samples**: Amostras por pixel. Aumenta a qualidade, mas o tempo cresce linearmente.
-- **width/height**: Resolução da imagem.
-  - Teste: 1280×720
-  - Alta qualidade: 1920×1080 (1080p) ou 2560×1440 (1440p)
-- **maxDepth**: Máximo de bounces (reflexões/refrações).
-  - 4–8 é suficiente para cenas simples
+The build creates these executables in `bin/`:
 
-### Exemplos de execução
+- `bin/simple_raytracer`
+- `bin/hybrid_ray_path_tracer`
+- `bin/procedural_path_tracer`
+
+On Windows, the generated files may appear with a `.exe` suffix.
+
+## Run
+
+The recommended workflow is:
 
 ```sh
-./bin/raytracer
-/.bin/rt_and_pt
-./bin/surreal_pathtracer
+make run
 ```
 
-Os programas pedem os parâmetros via terminal.
+The launcher shows the three scenes with short descriptions. After you choose one, the selected scene asks its own questions in the terminal.
 
-## Dicas de Performance
+If you prefer direct execution, you can run the binaries yourself:
 
-- Faça um render rápido com `samples=8` para checar composição.
-- Para imagem final, aumente os samples.
-- Compile com `-O3` e/ou `-use_fast_math` para mais velocidade (pode afetar precisão).
-- O principal gargalo é o tempo de computação, não a memória.
-  - Exemplo: 2560×1440 usa ~44MB para o framebuffer (floats).
+```sh
+./bin/simple_raytracer
+./bin/hybrid_ray_path_tracer
+./bin/procedural_path_tracer
+```
 
-## Resultados Esperados
+The programs save PNG files in the `images/` directory. The directory is created automatically if it does not exist.
 
-- Com `samples=100` e `1280×720` em uma GPU moderna, a imagem já fica razoável (algum ruído).
-- Para imagem limpa, aumente os samples.
-- No CPU, o tempo de render é muito maior — a vantagem da GPU é enorme.
+Files produced during the same execution share the same timestamp suffix, which keeps CPU/GPU comparison renders grouped together.
 
-## Recursos Extras
+## Prompt Style
 
-Se quiser implementar mais recursos, veja sugestões:
+All scene prompts are English-only and follow the same rules:
 
-- Luzes de área suave (soft area lights)
-- Materiais dielétricos (vidro)
-- BVH para aceleração (essencial para muitas esferas)
-- Render progressivo (salva a cada passe)
-- Denoiser
+- press Enter to accept the default value
+- use whole numbers where integers are requested
+- use the example values shown in the prompt if you want a safe first test
+- the launcher chooses the scene only; the selected scene handles its own rendering options
 
-Abra uma issue ou peça ajuda para adicionar qualquer um desses itens!
+## Scene Details
 
-## Créditos: 
+### 1. Simple Ray Tracer
 
-- Cristian dos Santos Siquiera — https://github.com/CristianSSiqueira
-- Pedro Rockenbach Frosi — https://github.com/frosipedro
+This scene is the best starting point if you want a quick CPU vs GPU comparison.
 
-**Uso do arquivo 'stb_image_write.h', disponibilizado no projeto:**
+Prompt flow:
+
+1. Choose the render mode:
+   - `1` = CPU
+   - `2` = GPU
+   - `3` = compare both
+2. The framebuffer is fixed at `3840x2880` in the current version.
+
+Recommended use:
+
+- choose GPU first for a faster test
+- choose both only when you want to compare timing and output directly
+
+Output files:
+
+- `images/simple_raytracer_cpu_YYYYMMDD_HHMMSS.png`
+- `images/simple_raytracer_gpu_YYYYMMDD_HHMMSS.png`
+
+### 2. Hybrid Ray/Path Tracer
+
+This is the most flexible scene in the repository. It contains two rendering modes inside one binary.
+
+Choose this when you want the heavier, more realistic path tracer.
+
+Prompt flow:
+
+1. Enter resolution as `width height`
+2. Choose samples per pixel
+3. Choose the maximum bounce depth
+4. Choose the CPU reference mode:
+   - `0` = none
+   - `1` = single-thread CPU
+   - `2` = OpenMP CPU
+   - `3` = both CPU references
+5. If you select OpenMP, choose the thread count or press Enter for automatic detection
+
+Recommended first run:
+
+- resolution: `1280 720`
+- samples: `64`
+- max bounces: `6`
+- CPU reference: `0`
+
+Output files:
+
+- `images/hybrid_pt_gpu_YYYYMMDD_HHMMSS.png`
+- `images/hybrid_pt_cpu_ref_YYYYMMDD_HHMMSS.png`
+- `images/hybrid_pt_cpu_omp_YYYYMMDD_HHMMSS.png`
+
+### 3. Procedural Path Tracer
+
+This is the heaviest scene in the repository and is GPU-only.
+
+Prompt flow:
+
+1. Enter resolution as `width height`
+2. Choose samples per pixel
+3. Choose max bounces
+4. Choose fog density
+
+Recommended first run:
+
+- resolution: `1280 720`
+- samples: `64`
+- max bounces: `6`
+- fog density: `0.02`
+
+Output file:
+
+- `images/procedural_path_tracer_gpu_YYYYMMDD_HHMMSS.png`
+
+## Performance Tips
+
+- Start with `1280x720` and a small sample count to confirm composition.
+- Increase samples only after the camera and scene look correct.
+- Increase bounce depth only when the scene benefits from additional indirect light.
+- The procedural path tracer is intentionally expensive; use it as a quality scene, not a quick preview.
+- If you want a faster build, keep `-O2` in the Makefile. If you want more speed and can tolerate longer compilation, you can experiment with `-O3` or `-use_fast_math`.
+
+## Troubleshooting
+
+- `nvcc` not found: install the CUDA Toolkit and make sure the CUDA binaries are on your `PATH`.
+- `pwsh` not found: install PowerShell 7 or run the scene binaries directly instead of using `make run`.
+- `stb_image_write.h` missing: the header should already be present in `scenes/`; restore it if it was removed.
+- Build fails on `rm` or shell syntax: use a shell environment that supports the Makefile commands, such as WSL or Git Bash.
+- Render is too slow: lower the resolution, reduce samples, or use the simple ray tracer before trying the heavy path tracer.
+
+## Credits
+
+- Cristian dos Santos Siquiera - https://github.com/CristianSSiqueira
+- Pedro Rockenbach Frosi - https://github.com/frosipedro
+
+The repository also uses `stb_image_write.h` from Sean Barrett's stb library:
+
 - https://github.com/nothings/stb
-
-
