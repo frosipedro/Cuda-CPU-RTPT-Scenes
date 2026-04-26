@@ -14,7 +14,7 @@ The current layout keeps the original rendering ideas intact, but the user exper
 | Scene                    | Description                                                                   | Supported modes                                       |
 | ------------------------ | ----------------------------------------------------------------------------- | ----------------------------------------------------- |
 | `simple_raytracer`       | An advanced ray tracer with reflections, direct lighting, and a richer scene. | CPU, GPU, or both                                     |
-| `hybrid_ray_path_tracer` | A path tracer with GPU rendering and optional CPU/OpenMP reference modes.     | Path tracing on GPU plus optional CPU reference modes |
+| `simple_path_tracer`     | A path tracer with GPU rendering and optional CPU/OpenMP reference modes.     | Path tracing on GPU plus optional CPU reference modes |
 | `procedural_path_tracer` | A GPU-only procedural path tracer with the heaviest workload in the project.  | GPU only                                              |
 
 ## Requirements
@@ -52,7 +52,7 @@ make clean
 The build creates these executables in `bin/`:
 
 - `bin/simple_raytracer`
-- `bin/hybrid_ray_path_tracer`
+- `bin/simple_path_tracer`
 - `bin/procedural_path_tracer`
 
 On Windows, the generated files may appear with a `.exe` suffix.
@@ -71,7 +71,7 @@ If you prefer direct execution, you can run the binaries yourself:
 
 ```sh
 ./bin/simple_raytracer
-./bin/hybrid_ray_path_tracer
+./bin/simple_path_tracer
 ./bin/procedural_path_tracer
 ```
 
@@ -112,7 +112,7 @@ Output files:
 - `images/simple_raytracer_cpu_YYYYMMDD_HHMMSS.png`
 - `images/simple_raytracer_gpu_YYYYMMDD_HHMMSS.png`
 
-### 2. Hybrid Ray/Path Tracer
+### 2. Simple Path Tracer
 
 This is the most flexible scene in the repository. It contains two rendering modes inside one binary.
 
@@ -130,18 +130,11 @@ Prompt flow:
    - `3` = both CPU references
 5. If you select OpenMP, choose the thread count or press Enter for automatic detection
 
-Recommended first run:
-
-- resolution: `1280 720`
-- samples: `64`
-- max bounces: `6`
-- CPU reference: `0`
-
 Output files:
 
-- `images/hybrid_pt_gpu_YYYYMMDD_HHMMSS.png`
-- `images/hybrid_pt_cpu_ref_YYYYMMDD_HHMMSS.png`
-- `images/hybrid_pt_cpu_omp_YYYYMMDD_HHMMSS.png`
+- `images/simple_pt_gpu_YYYYMMDD_HHMMSS.png`
+- `images/simple_pt_cpu_YYYYMMDD_HHMMSS.png`
+- `images/simple_pt_cpu_openmp_YYYYMMDD_HHMMSS.png`
 
 ### 3. Procedural Path Tracer
 
@@ -154,24 +147,9 @@ Prompt flow:
 3. Choose max bounces
 4. Choose fog density
 
-Recommended first run:
-
-- resolution: `1280 720`
-- samples: `64`
-- max bounces: `6`
-- fog density: `0.02`
-
 Output file:
 
 - `images/procedural_path_tracer_gpu_YYYYMMDD_HHMMSS.png`
-
-## Performance Tips
-
-- Start with `1280x720` and a small sample count to confirm composition.
-- Increase samples only after the camera and scene look correct.
-- Increase bounce depth only when the scene benefits from additional indirect light.
-- The procedural path tracer is intentionally expensive; use it as a quality scene, not a quick preview.
-- If you want a faster build, keep `-O2` in the Makefile. If you want more speed and can tolerate longer compilation, you can experiment with `-O3` or `-use_fast_math`.
 
 ## Troubleshooting
 

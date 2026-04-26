@@ -389,7 +389,7 @@ __global__ void render_path_gpu(Vec3* fb, int width, int height, Sphere* spheres
 
 // -------------------------- Host orchestration & menu --------------------------
 int main(){
-    std::cout << "Hybrid Path Tracer\n";
+    std::cout << "Simple Path Tracer\n";
     std::cout << "GPU path tracing with optional CPU reference modes.\n";
     std::cout << "Output files are written to images/.\n";
     std::cout << "\nRender setup will be summarized after you answer the prompts.\n";
@@ -483,7 +483,7 @@ int main(){
             img[3*i+1] = (unsigned char)ig;
             img[3*i+2] = (unsigned char)ib;
         }
-        std::string gpu_output = make_output_name("hybrid_pt", "gpu", render_stamp);
+        std::string gpu_output = make_output_name("simple_pt", "gpu", render_stamp);
         stbi_write_png(gpu_output.c_str(), width, height, 3, img, width*3);
         std::cout << "Saved image: " << gpu_output << "\n";
         delete[] img;
@@ -526,7 +526,7 @@ int main(){
                 imgc[3*i+1] = (unsigned char)ig;
                 imgc[3*i+2] = (unsigned char)ib;
             }
-            std::string cpu_output = make_output_name("hybrid_pt", "cpu_ref", render_stamp);
+            std::string cpu_output = make_output_name("simple_pt", "cpu", render_stamp);
             stbi_write_png(cpu_output.c_str(), width, height, 3, imgc, width*3);
             std::cout << "Saved image: " << cpu_output << "\n";
             delete[] imgc;
@@ -579,7 +579,7 @@ int main(){
                 imgc[3*i+1] = (unsigned char)ig;
                 imgc[3*i+2] = (unsigned char)ib;
             }
-            std::string cpu_output = make_output_name("hybrid_pt", "cpu_omp", render_stamp);
+            std::string cpu_output = make_output_name("simple_pt", "cpu_openmp", render_stamp);
             stbi_write_png(cpu_output.c_str(), width, height, 3, imgc, width*3);
             std::cout << "Saved image: " << cpu_output << "\n";
             delete[] imgc;
