@@ -4,9 +4,8 @@ This repository contains three standalone CUDA rendering scenes that share the s
 
 The current layout keeps the original rendering ideas intact, but the user experience is more structured:
 
-- one launcher to choose the scene
+- launcher to choose the scene
 - clear scene names
-- consistent English prompts
 - timestamped PNG outputs in `images/` to avoid overwriting previous renders
 
 ## Scenes
@@ -78,15 +77,6 @@ If you prefer direct execution, you can run the binaries yourself:
 The programs save PNG files in the `images/` directory. The directory is created automatically if it does not exist.
 
 Files produced during the same execution share the same timestamp suffix, which keeps CPU/GPU comparison renders grouped together.
-
-## Prompt Style
-
-All scene prompts are English-only and follow the same rules:
-
-- press Enter to accept the default value
-- use whole numbers where integers are requested
-- use the example values shown in the prompt if you want a safe first test
-- the launcher chooses the scene only; the selected scene handles its own rendering options
 
 ## Scene Details
 
